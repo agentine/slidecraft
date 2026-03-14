@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Re-export `Image` class from top-level `slidecraft` package for direct import
+
+### Fixed
+- Centralized XML parsing via `parse_xml()` helper; added ZIP entry size limits to prevent ZIP bomb attacks
+- Removed unused imports and dead code; added ruff to CI for lint enforcement
+
 ## 0.1.0 (2026-03-14)
 
 Initial release.
