@@ -27,7 +27,7 @@ A modern, type-annotated Python library for creating, reading, and updating Powe
 
 6. **Charts** — Basic chart support: bar, column, line, pie charts with data binding.
 
-7. **Slide Layouts & Masters** — Access and apply built-in slide layouts. Theme color and font scheme support.
+7. **Slide Layouts & Masters** — Access and apply built-in slide layouts.
 
 ### Non-Goals (v1)
 
@@ -35,6 +35,7 @@ A modern, type-annotated Python library for creating, reading, and updating Powe
 - SmartArt
 - VBA/macros
 - Audio/video embedding
+- Theme color and font scheme API
 - Full theme editing
 - Slide comments and notes (stretch goal)
 
@@ -59,11 +60,9 @@ slidecraft/
       table.py        # Table shape
       chart.py        # Chart shapes
     text.py           # TextFrame, Paragraph, Run, Font
-    theme.py          # Theme colors, fonts
     enum.py           # PowerPoint enumerations
   xml/            # XML helpers
     ns.py         # Namespace management
-    builder.py    # Fluent XML element builder
     parse.py      # XML parsing utilities
   util/
     units.py      # EMU, Inches, Cm, Pt, Emu conversions
