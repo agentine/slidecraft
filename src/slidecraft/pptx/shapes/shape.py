@@ -9,9 +9,11 @@ from typing import TYPE_CHECKING
 from slidecraft.pptx.enum import MSO_SHAPE_TYPE
 from slidecraft.pptx.text import TextFrame
 from slidecraft.util.units import Emu
-from slidecraft.xml.ns import qn
+from slidecraft.xml.ns import CT, RT, qn
 
 if TYPE_CHECKING:
+    from slidecraft.pptx.shapes.picture import Image
+    from slidecraft.pptx.shapes.table import Table
     from slidecraft.pptx.slide import Slide
 
 
@@ -193,6 +195,65 @@ class ShapeCollection:
         )
         self._sp_tree.append(sp)
         return BaseShape(sp, self._slide)
+
+    def add_table(
+        self, rows: int, cols: int, left: int, top: int, width: int, height: int
+    ) -> Table:
+        """Add a table shape."""
+        from slidecraft.pptx.shapes.table import Table, make_table_element
+
+        shape_id = self._next_id()
+        gf = make_table_element(shape_id, rows, cols, left, top, width, height)
+        self._sp_tree.append(gf)
+        return Table(gf, self._slide)
+
+    def add_picture(
+        self,
+        image: Image,
+        left: int,
+        top: int,
+        width: int | None = None,
+        height: int | None = None,
+    ) -> BaseShape:
+        """Add a picture shape. Image must be an Image object."""
+        from slidecraft.opc.part import Part
+        from slidecraft.pptx.shapes.picture import make_picture_element
+
+        if self._slide is None:
+            raise ValueError("Cannot add picture without a slide context")
+
+        # Determine dimensions (default to image native size at 96 DPI)
+        if width is None:
+            width = int(image.width * 914400 / 96) if image.width else 914400
+        if height is None:
+            height = int(image.height * 914400 / 96) if image.height else 914400
+
+        # Add image as a part in the package
+        prs = self._slide._presentation
+        if prs is None:
+            raise ValueError("Slide not attached to presentation")
+
+        img_num = len([
+            p for p in prs._pkg.parts
+            if p.startswith("/ppt/media/")
+        ]) + 1
+        img_path = f"/ppt/media/image{img_num}.{image.ext}"
+        img_part = Part(img_path, image.content_type, image.blob)
+        prs._pkg.add_part(img_part)
+
+        # Add content type default
+        prs._pkg.content_types.add_default(image.ext, image.content_type)
+
+        # Add relationship from slide to image
+        rel_target = f"../media/image{img_num}.{image.ext}"
+        rel = self._slide._part.rels.add(RT["IMAGE"], rel_target)
+
+        shape_id = self._next_id()
+        pic = make_picture_element(
+            shape_id, rel.r_id, f"Picture {shape_id}", left, top, width, height
+        )
+        self._sp_tree.append(pic)
+        return BaseShape(pic, self._slide)
 
     def __iter__(self) -> Iterator[BaseShape]:
         for child in self._sp_tree:
