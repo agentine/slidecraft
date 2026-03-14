@@ -56,7 +56,7 @@ class TestPicture:
         slide = prs.slides.add()
         blob = _make_png_bytes(100, 50)
         img = Image.from_blob(blob)
-        pic = slide.shapes.add_picture(img, Inches(1), Inches(1))
+        slide.shapes.add_picture(img, Inches(1), Inches(1))
         assert len(slide.shapes) == 1
 
     def test_add_picture_with_dimensions(self) -> None:

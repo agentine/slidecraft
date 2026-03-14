@@ -7,7 +7,7 @@ import struct
 import xml.etree.ElementTree as ET
 from typing import TYPE_CHECKING
 
-from slidecraft.xml.ns import CT, RT, qn
+from slidecraft.xml.ns import CT, qn
 
 if TYPE_CHECKING:
     from slidecraft.pptx.slide import Slide

@@ -7,7 +7,7 @@ from enum import IntEnum
 from typing import TYPE_CHECKING
 
 from slidecraft.pptx.enum import ChartType
-from slidecraft.xml.ns import NS, RT, qn
+from slidecraft.xml.ns import NS, qn
 
 if TYPE_CHECKING:
     from slidecraft.pptx.slide import Slide
@@ -91,7 +91,7 @@ def generate_chart_xml(
     plot_area = ET.SubElement(chart, f"{{{_C_NS}}}plotArea")
 
     # Chart-type specific element
-    chart_elem = _make_chart_type_element(chart_type, chart_data, plot_area)
+    _make_chart_type_element(chart_type, chart_data, plot_area)
 
     # Category axis + value axis for non-pie charts
     if chart_type != ChartType.PIE:

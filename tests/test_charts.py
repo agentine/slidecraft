@@ -85,7 +85,7 @@ class TestChartOnSlide:
         cd.categories = ["Q1", "Q2", "Q3"]
         cd.add_series("Sales", [100.0, 200.0, 150.0])
         cd.add_series("Costs", [80.0, 160.0, 120.0])
-        shape = slide.shapes.add_chart(
+        slide.shapes.add_chart(
             ChartType.BAR, cd, Inches(1), Inches(1), Inches(6), Inches(4)
         )
         assert len(slide.shapes) == 1

@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import io
 
-from slidecraft.pptx.enum import MSO_SHAPE_TYPE, PP_ALIGN
+from slidecraft.pptx.enum import PP_ALIGN
 from slidecraft.pptx.presentation import Presentation
 from slidecraft.util.color import RGBColor
-from slidecraft.util.units import Inches, Pt
+from slidecraft.util.units import Inches
 
 
 class TestShapeCollection:

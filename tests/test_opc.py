@@ -7,7 +7,7 @@ import io
 from slidecraft.opc.content_types import ContentTypeMap
 from slidecraft.opc.package import OpcPackage
 from slidecraft.opc.part import Part
-from slidecraft.opc.relationships import Relationship, RelationshipCollection
+from slidecraft.opc.relationships import RelationshipCollection
 from slidecraft.util.color import RGBColor
 from slidecraft.util.units import Cm, Emu, Inches, Pt
 from slidecraft.xml.ns import qn
