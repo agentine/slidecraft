@@ -13,6 +13,10 @@ from slidecraft.opc.part import Part
 from slidecraft.opc.relationships import RelationshipCollection
 
 
+# Max decompressed size per ZIP entry (200 MB) to guard against ZIP bombs.
+_MAX_ENTRY_SIZE = 200 * 1024 * 1024
+
+
 class OpcPackage:
     """An Open Packaging Convention (OPC) package.
 
@@ -37,12 +41,12 @@ class OpcPackage:
 
         with zf:
             # Parse [Content_Types].xml
-            ct_bytes = zf.read("[Content_Types].xml")
+            ct_bytes = _safe_read(zf, "[Content_Types].xml")
             pkg._content_types = ContentTypeMap.from_xml(ct_bytes)
 
             # Parse package-level relationships
             if "_rels/.rels" in zf.namelist():
-                rels_bytes = zf.read("_rels/.rels")
+                rels_bytes = _safe_read(zf, "_rels/.rels")
                 pkg._rels = RelationshipCollection.from_xml(rels_bytes)
 
             # Load all parts
@@ -53,13 +57,15 @@ class OpcPackage:
                     continue
                 part_name = f"/{name}" if not name.startswith("/") else name
                 content_type = pkg._content_types.content_type_for(part_name) or ""
-                blob = zf.read(name)
+                blob = _safe_read(zf, name)
 
                 # Check for part-level rels
                 rels_path = _rels_path_for(name)
                 part_rels: RelationshipCollection | None = None
                 if rels_path in zf.namelist():
-                    part_rels = RelationshipCollection.from_xml(zf.read(rels_path))
+                    part_rels = RelationshipCollection.from_xml(
+                        _safe_read(zf, rels_path)
+                    )
 
                 part = Part(part_name, content_type, blob, part_rels)
                 pkg._parts[part_name] = part
@@ -123,6 +129,17 @@ class OpcPackage:
     def iter_parts(self) -> Iterator[Part]:
         """Iterate over all parts."""
         yield from self._parts.values()
+
+
+def _safe_read(zf: zipfile.ZipFile, name: str) -> bytes:
+    """Read a ZIP entry with a size guard against ZIP bombs."""
+    info = zf.getinfo(name)
+    if info.file_size > _MAX_ENTRY_SIZE:
+        raise ValueError(
+            f"ZIP entry {name!r} exceeds size limit "
+            f"({info.file_size} > {_MAX_ENTRY_SIZE})"
+        )
+    return zf.read(name)
 
 
 def _rels_path_for(part_path: str) -> str:

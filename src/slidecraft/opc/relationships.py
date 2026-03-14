@@ -7,6 +7,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass, field
 
 from slidecraft.xml.ns import NS
+from slidecraft.xml.parse import parse_xml
 
 _REL_NS = NS["pr"]
 
@@ -31,7 +32,7 @@ class RelationshipCollection:
     @classmethod
     def from_xml(cls, xml_bytes: bytes) -> RelationshipCollection:
         """Parse .rels XML bytes."""
-        root = ET.fromstring(xml_bytes)
+        root = parse_xml(xml_bytes)
         coll = cls()
         max_id = 0
         for child in root:

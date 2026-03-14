@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 
 from slidecraft.xml.ns import NS
+from slidecraft.xml.parse import parse_xml
 
 _CT_NS = NS["ct"]
 
@@ -20,7 +21,7 @@ class ContentTypeMap:
     @classmethod
     def from_xml(cls, xml_bytes: bytes) -> ContentTypeMap:
         """Parse [Content_Types].xml bytes."""
-        root = ET.fromstring(xml_bytes)
+        root = parse_xml(xml_bytes)
         ct = cls()
         for child in root:
             tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
