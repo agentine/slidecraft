@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from typing import TYPE_CHECKING
 
 from slidecraft.opc.part import Part
+from slidecraft.pptx.shapes.shape import ShapeCollection
 from slidecraft.xml.ns import qn
 from slidecraft.xml.parse import parse_xml, serialize_xml
 
@@ -119,6 +120,14 @@ class Slide:
     @property
     def part(self) -> Part:
         return self._part
+
+    @property
+    def shapes(self) -> ShapeCollection:
+        """Get shapes on this slide."""
+        sp_tree = self.sp_tree
+        if sp_tree is None:
+            raise ValueError("Slide has no shape tree")
+        return ShapeCollection(sp_tree, self)
 
     @property
     def sp_tree(self) -> ET.Element | None:
