@@ -207,6 +207,59 @@ class ShapeCollection:
         self._sp_tree.append(gf)
         return Table(gf, self._slide)
 
+    def add_chart(
+        self,
+        chart_type: int,
+        chart_data: object,
+        left: int,
+        top: int,
+        width: int,
+        height: int,
+    ) -> BaseShape:
+        """Add a chart shape.
+
+        chart_type: ChartType enum value
+        chart_data: ChartData object
+        """
+        from slidecraft.opc.part import Part
+        from slidecraft.pptx.enum import ChartType as ChartTypeEnum
+        from slidecraft.pptx.shapes.chart import (
+            ChartData,
+            generate_chart_xml,
+            make_chart_graphic_frame,
+        )
+
+        if self._slide is None:
+            raise ValueError("Cannot add chart without a slide context")
+        if not isinstance(chart_data, ChartData):
+            raise TypeError("chart_data must be a ChartData instance")
+
+        prs = self._slide._presentation
+        if prs is None:
+            raise ValueError("Slide not attached to presentation")
+
+        # Generate chart XML
+        ct = ChartTypeEnum(chart_type)
+        chart_xml = generate_chart_xml(ct, chart_data)
+
+        # Add chart part
+        chart_num = len([
+            p for p in prs._pkg.parts
+            if p.startswith("/ppt/charts/")
+        ]) + 1
+        chart_path = f"/ppt/charts/chart{chart_num}.xml"
+        chart_part = Part(chart_path, CT["CHART"], chart_xml)
+        prs._pkg.add_part(chart_part)
+
+        # Add relationship from slide to chart
+        rel_target = f"../charts/chart{chart_num}.xml"
+        rel = self._slide._part.rels.add(RT["CHART"], rel_target)
+
+        shape_id = self._next_id()
+        gf = make_chart_graphic_frame(shape_id, rel.r_id, left, top, width, height)
+        self._sp_tree.append(gf)
+        return BaseShape(gf, self._slide)
+
     def add_picture(
         self,
         image: Image,
