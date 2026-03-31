@@ -87,6 +87,9 @@ def generate_chart_xml(
     chart_space = ET.Element(f"{{{_C_NS}}}chartSpace")
     chart = ET.SubElement(chart_space, f"{{{_C_NS}}}chart")
 
+    auto_title_del = ET.SubElement(chart, f"{{{_C_NS}}}autoTitleDeleted")
+    auto_title_del.set("val", "1")
+
     # Plot area
     plot_area = ET.SubElement(chart, f"{{{_C_NS}}}plotArea")
 
