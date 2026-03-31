@@ -97,6 +97,22 @@ class TestFullRoundTrip:
         # Verify slide 4 has a chart
         assert len(prs2.slides[3].shapes) >= 1
 
+    def test_save_syncs_slide_blobs(self) -> None:
+        """Verify save() syncs slide elements without explicit _sync_blob() calls."""
+        prs = Presentation()
+        slide = prs.slides.add()
+        tb = slide.shapes.add_textbox(Inches(1), Inches(1), Inches(6), Inches(1))
+        tb.text_frame.text = "auto-synced text"
+
+        # Save without calling _sync_blob() — save() should handle it
+        buf = io.BytesIO()
+        prs.save(buf)
+
+        buf.seek(0)
+        prs2 = Presentation.open(buf)
+        assert len(prs2.slides) == 1
+        assert prs2.slides[0].shapes[0].text_frame.text == "auto-synced text"
+
     def test_empty_presentation_roundtrip(self) -> None:
         """Empty presentation should round-trip."""
         prs = Presentation()

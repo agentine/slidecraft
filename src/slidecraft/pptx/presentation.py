@@ -62,6 +62,9 @@ class Presentation:
 
     def save(self, path: str | os.PathLike[str] | io.BytesIO) -> None:
         """Save the presentation to a .pptx file."""
+        # Sync slide element trees back to their part blobs
+        for slide in self._slides:
+            slide._sync_blob()
         # Sync presentation XML back to part
         pres_part = self._pkg.get_part("/ppt/presentation.xml")
         if pres_part is not None:
