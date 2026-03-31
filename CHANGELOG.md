@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (2026-03-31)
+
+- Fix: sync slide element trees to part blobs in `Presentation.save()` — ensures modified slides are written correctly
+- Security: pin all CI GitHub Actions to commit SHAs for supply chain security
+- CI: bump `actions/setup-python` from 5 to 6, `astral-sh/setup-uv` from 5 to 7
+
 ## 0.1.0 (2026-03-14)
 
 Initial release.
