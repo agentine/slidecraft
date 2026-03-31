@@ -116,33 +116,50 @@ run.font.color = RGBColor(255, 0, 0)
 ### Tables
 
 ```python
-table = slide.shapes.add_table(rows, cols, left, top, width, height)
-table.cell(0, 0).text = "Header"
+from slidecraft import Inches, Presentation
+
+prs = Presentation()
+slide = prs.slides.add()
+table = slide.shapes.add_table(3, 2, Inches(1), Inches(1), Inches(6), Inches(3))
+table.cell(0, 0).text = "Name"
+table.cell(0, 1).text = "Score"
+table.cell(1, 0).text = "Alice"
+table.cell(1, 1).text = "95"
+table.cell(2, 0).text = "Bob"
+table.cell(2, 1).text = "87"
 table.rows[0].height = Inches(0.5)
-table.columns[0].width = Inches(2)
+table.columns[0].width = Inches(3)
+prs.save("tables.pptx")
 ```
 
 ### Images
 
 ```python
-from slidecraft.pptx.shapes.picture import Image
+from slidecraft import Image, Inches, Presentation
 
+prs = Presentation()
+slide = prs.slides.add()
 img = Image.from_file("photo.png")
 slide.shapes.add_picture(img, Inches(1), Inches(1), Inches(4), Inches(3))
+prs.save("images.pptx")
 ```
 
 ### Charts
 
 ```python
-from slidecraft import ChartData, ChartType
+from slidecraft import ChartData, ChartType, Inches, Presentation
 
+prs = Presentation()
+slide = prs.slides.add()
 cd = ChartData()
 cd.categories = ["Q1", "Q2", "Q3", "Q4"]
 cd.add_series("Sales", [100, 200, 150, 300])
 cd.add_series("Costs", [80, 160, 120, 240])
-
 slide.shapes.add_chart(ChartType.COLUMN, cd, Inches(1), Inches(1), Inches(6), Inches(4))
+prs.save("charts.pptx")
 ```
+
+See [examples/](examples/) for more complete runnable scripts.
 
 ### Units
 
