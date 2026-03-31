@@ -1,6 +1,6 @@
 [project]
 name = "slidecraft"
-version = "0.1.1"
+version = "0.1.2"
 description = "Modern Python library for creating and modifying PowerPoint (.pptx) files."
 readme = "README.md"
 license = "MIT"

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 (2026-03-31)
+
+- Fix: add `c:autoTitleDeleted` to chart XML to prevent blank pages in PowerPoint
+- Docs: fix README code examples to be fully copy-pastable
+- New: add `examples/` directory with 6 runnable example scripts (basic presentation, charts, tables, images, text formatting, multi-slide)
+
 ## 0.1.1 (2026-03-31)
 
 - Fix: sync slide element trees to part blobs in `Presentation.save()` — ensures modified slides are written correctly
